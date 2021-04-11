@@ -29,7 +29,33 @@
     </header>
     <main class="container-fluid">
       <div class="row px-3">
-        <div class="col-md-3 col-sm-12 bg-light">Search Form</div>
+        <div class="col-md-3 col-sm-12 bg-light">
+          <div>
+            <h4 class="p-md-2">Search for a City:</h4>
+            <form
+              class="row row-cols-lg-auto g-3 align-items-center"
+              id="search-by-city-form"
+            >
+              <div class="col-12">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city-input"
+                    placeholder="Enter city name"
+                  />
+                </div>
+              </div>
+
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div>City List</div>
+        </div>
         <div class="col-md-9 col-sm-12">Card</div>
       </div>
     </main>
