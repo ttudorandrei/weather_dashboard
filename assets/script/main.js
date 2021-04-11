@@ -86,7 +86,7 @@ const renderAllCards = async (cityName) => {
 
   const currentDayResponse = await fetchData(currentDayUrl);
 
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`;
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=imperial&appid=${API_KEY}`;
 
   const forecastResponse = await fetchData(forecastUrl);
 
@@ -167,13 +167,13 @@ const renderCurrentDayCard = (data) => {
 };
 
 const renderForecastCard = (data) => {
-  const card = `<div class="card mh-100 bg-primary text-light rounded card-block">
+  const card = `<div class="card mh-100 bg-primary text-light rounded card-block m-2 px-3 py-2">
     <h5 class="card-title p-1">${data.date}</h5>
     <img src="${data.iconURL}" />
     <h6 class="card-subtitle mb-2 text-light p-md-2">
-      Temperature: ${data.temperature}&deg; C
+      Temperature: ${data.temperature} &deg;F
     </h6>
-    <h6 class="card-subtitle mb-2 text-light p-md-2">
+    <h6 class="card-subtitle mb-2 text-light p-md-3">
       Humidity: ${data.humidity}%
     </h6>
   </div>`;
