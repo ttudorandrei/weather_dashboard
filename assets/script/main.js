@@ -40,12 +40,13 @@ const getDataByCityName = async (event) => {
 const transformCurrentDayData = (data, name) => {
   const current = data.current;
   return {
-    cityName: data.name,
-    temperature: data.main.temp,
-    humidity: data.main.humidity,
-    windSpeed: data.wind.speed,
-    date: moment.unix(data.dt).format("MM/DD/YYYY"),
-    iconURL: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+    cityName: name,
+    temperature: current.temp,
+    humidity: current.humidity,
+    windSpeed: current.wind_speed,
+    date: moment.unix(current.dt).format("MM/DD/YYYY"),
+    iconURL: `http://openweathermap.org/img/wn/${current.weather[0].icon}@2x.png`,
+    uvi: current.uvi,
   };
 };
 
@@ -85,8 +86,6 @@ const renderAllCards = async (cityName) => {
 
   const currentDayResponse = await fetchData(currentDayUrl);
 
-  const currentDayData = transformCurrentDayData(currentDayResponse);
-
   const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`;
 
   const forecastResponse = await fetchData(forecastUrl);
@@ -97,6 +96,11 @@ const renderAllCards = async (cityName) => {
 
   //this gets the forecast data starting with the following day to the day the search was made on
   cardsData.slice(1, 6).forEach(renderForecastCard);
+
+  const currentDayData = transformCurrentDayData(
+    forecastResponse,
+    currentDayResponse.name
+  );
 
   renderCurrentDayCard(currentDayData);
 };
@@ -141,7 +145,7 @@ const renderCurrentDayCard = (data) => {
     <div class="py-2">Temperature: ${data.temperature} &deg;F</div>
     <div class="py-2">Humidity: ${data.humidity}%</div>
     <div class="py-2">Wind Speed: ${data.windSpeed} MPH</div>
-    <div class="py-2">UV Index: <span class=""></span></div>
+    <div class="py-2">UV Index: <span class="">${data.uvi}</span></div>
   </div>
 </div>`;
 
