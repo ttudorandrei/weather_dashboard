@@ -166,6 +166,7 @@ const renderCurrentDayCard = (data) => {
   $("#current-day").append(card);
 };
 
+//this code will generate the forecast cards
 const renderForecastCard = (data) => {
   const card = `<div class="card mh-100 bg-primary text-light rounded card-block m-2 px-3 py-2">
     <h5 class="card-title p-1">${data.date}</h5>
