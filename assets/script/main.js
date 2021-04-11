@@ -32,18 +32,29 @@ const getDataByCityName = async (event) => {
   if (target.is("li")) {
     const cityName = target.data("city");
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
+    const currentDayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
 
-    const data = await fetchData(url);
+    const currentDayResponse = await fetchData(currentDayUrl);
 
-    const currentDayData = transformData(data);
+    const currentDayData = transformCurrentDayData(currentDayResponse);
+
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`;
+
+    const forecastResponse = await fetchData(forecastUrl);
+
+    const cardsData = forecastResponse.daily.map(transformForecastData);
+
+    $("#forecast-cards-container").empty();
+
+    //this gets the forecast data starting with the following day to the day the search was made on
+    cardsData.slice(1, 6).forEach(renderForecastCard);
 
     renderCurrentDayCard(currentDayData);
   }
 };
 
-//contains the data we want from the One Call API
-const transformData = (data, name) => {
+//contains the data we want from the Current Weather Data API
+const transformCurrentDayData = (data, name) => {
   const current = data.current;
   return {
     cityName: data.name,
@@ -52,6 +63,15 @@ const transformData = (data, name) => {
     windSpeed: data.wind.speed,
     date: moment.unix(data.dt).format("MM/DD/YYYY"),
     iconURL: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+  };
+};
+
+const transformForecastData = (data) => {
+  return {
+    date: moment.unix(data.dt).format("MM/DD/YYYY"),
+    iconURL: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+    temperature: data.temp.day,
+    humidity: data.humidity,
   };
 };
 
@@ -74,17 +94,24 @@ const onSubmit = async (event) => {
   //this clears the text from input after submitting
   $("#city-input").val("");
 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
+  const currentDayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
 
-  const data = await fetchData(url);
+  const currentDayResponse = await fetchData(currentDayUrl);
 
-  const currentDayData = transformData(data);
+  const currentDayData = transformCurrentDayData(currentDayResponse);
+
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`;
+
+  const forecastResponse = await fetchData(forecastUrl);
+
+  const cardsData = forecastResponse.daily.map(transformForecastData);
+
+  $("#forecast-cards-container").empty();
+
+  //this gets the forecast data starting with the following day to the day the search was made on
+  cardsData.slice(1, 6).forEach(renderForecastCard);
 
   renderCurrentDayCard(currentDayData);
-
-  console.log(currentDayData);
-
-  console.log(data);
 };
 
 const renderCitiesFromLocalStorage = () => {
@@ -133,6 +160,21 @@ const renderCurrentDayCard = (data) => {
 
   //appends card to the card-container div
   $("#current-day").append(card);
+};
+
+const renderForecastCard = (data) => {
+  const card = `<div class="card mh-100 bg-primary text-light rounded card-block">
+    <h5 class="card-title p-1">${data.date}</h5>
+    <img src="${data.iconURL}" />
+    <h6 class="card-subtitle mb-2 text-light p-md-2">
+      Temperature: ${data.temperature}&deg; C
+    </h6>
+    <h6 class="card-subtitle mb-2 text-light p-md-2">
+      Humidity: ${data.humidity}%
+    </h6>
+  </div>`;
+
+  $("#forecast-cards-container").append(card);
 };
 
 //the code inside this function will run when app is loaded
