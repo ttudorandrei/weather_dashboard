@@ -25,12 +25,18 @@ const fetchData = async (url) => {
 };
 
 //this will retrieve the city name based on which list item is clicked
-const getDataByCityName = (event) => {
+const getDataByCityName = async (event) => {
   const target = $(event.target);
 
+  //if tagreted element is a li, it will execute the function
   if (target.is("li")) {
     const cityName = target.data("city");
-    fetchData(cityName);
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
+
+    const data = await fetchData(url);
+
+    console.log(data);
   }
 };
 
