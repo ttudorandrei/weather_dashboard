@@ -28,7 +28,7 @@ const fetchData = async (url) => {
 const getDataByCityName = async (event) => {
   const target = $(event.target);
 
-  //if tagreted element is a li, it will execute the function
+  //if targeted element is a li, it will execute the function
   if (target.is("li")) {
     const cityName = target.data("city");
 
@@ -36,14 +36,30 @@ const getDataByCityName = async (event) => {
 
     const data = await fetchData(url);
 
-    console.log(data);
+    const currentDayData = transformData(data);
+
+    renderCurrentDayCard(currentDayData);
   }
+};
+
+//contains the data we want from the One Call API
+const transformData = (data, name) => {
+  const current = data.current;
+  return {
+    cityName: data.name,
+    temperature: data.main.temp,
+    humidity: data.main.humidity,
+    windSpeed: data.wind.speed,
+    date: moment.unix(data.dt).format("MM/DD/YYYY"),
+    iconURL: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
+  };
 };
 
 //this function will be executed on form submit
 const onSubmit = async (event) => {
   event.preventDefault();
 
+  //gets the value of input and stores it in a variable
   const cityName = $("#city-input").val();
   const cities = getFromLocalStorage();
 
@@ -61,6 +77,12 @@ const onSubmit = async (event) => {
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
 
   const data = await fetchData(url);
+
+  const currentDayData = transformData(data);
+
+  renderCurrentDayCard(currentDayData);
+
+  console.log(currentDayData);
 
   console.log(data);
 };
@@ -92,6 +114,28 @@ const renderCitiesFromLocalStorage = () => {
   $("#searched-cities").append(ul);
 };
 
+const renderCurrentDayCard = (data) => {
+  // this will make sure that the current day container in empty before appending a the city searched by user
+  $("#current-day").empty();
+
+  //creates card with data from api
+  const card = `<div class="card my-2">
+  <div class="card-body">
+    <h2>
+    ${data.cityName} ${data.date}<img src="${data.iconURL}" />
+    </h2>
+    <div class="py-2">Temperature: ${data.temperature} &deg; C</div>
+    <div class="py-2">Humidity: ${data.humidity}%</div>
+    <div class="py-2">Wind Speed: ${data.windSpeed} MPH</div>
+    <div class="py-2">UV Index: <span class=""></span></div>
+  </div>
+</div>`;
+
+  //appends card to the card-container div
+  $("#current-day").append(card);
+};
+
+//the code inside this function will run when app is loaded
 const onReady = () => {
   renderCitiesFromLocalStorage();
 };
