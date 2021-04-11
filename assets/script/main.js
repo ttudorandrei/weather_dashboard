@@ -9,6 +9,16 @@ const getFromLocalStorage = () => {
   }
 };
 
+//this will retrieve the city name based on which list item is clicked
+const getDataByCityName = (event) => {
+  const target = $(event.target);
+
+  if (target.is("li")) {
+    const cityName = target.data("city");
+    console.log(cityName);
+  }
+};
+
 //this function will be executed on form submit
 const onSubmit = (event) => {
   event.preventDefault();
@@ -40,13 +50,17 @@ const renderCitiesFromLocalStorage = () => {
 
   //for each city in local storage create li and append to target ul
   const appendListItemToUl = (city) => {
-    console.log(city);
-    const li = `<li class="list-group-item">${city}</li>`;
+    const li = $("<li>")
+      .addClass("list-group-item")
+      .text(city)
+      .attr("data-city", city);
     ul.append(li);
   };
 
   //creates list item for each city stored in local storage and appends it
   cities.forEach(appendListItemToUl);
+
+  ul.on("click", getDataByCityName);
 
   $("#searched-cities").append(ul);
 };
