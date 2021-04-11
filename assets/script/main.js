@@ -32,24 +32,7 @@ const getDataByCityName = async (event) => {
   if (target.is("li")) {
     const cityName = target.data("city");
 
-    const currentDayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
-
-    const currentDayResponse = await fetchData(currentDayUrl);
-
-    const currentDayData = transformCurrentDayData(currentDayResponse);
-
-    const forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${currentDayResponse.coord.lat}&lon=${currentDayResponse.coord.lon}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`;
-
-    const forecastResponse = await fetchData(forecastUrl);
-
-    const cardsData = forecastResponse.daily.map(transformForecastData);
-
-    $("#forecast-cards-container").empty();
-
-    //this gets the forecast data starting with the following day to the day the search was made on
-    cardsData.slice(1, 6).forEach(renderForecastCard);
-
-    renderCurrentDayCard(currentDayData);
+    renderAllCards(cityName);
   }
 };
 
@@ -94,6 +77,10 @@ const onSubmit = async (event) => {
   //this clears the text from input after submitting
   $("#city-input").val("");
 
+  renderAllCards(cityName);
+};
+
+const renderAllCards = async (cityName) => {
   const currentDayUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=imperial&appid=${API_KEY}`;
 
   const currentDayResponse = await fetchData(currentDayUrl);
