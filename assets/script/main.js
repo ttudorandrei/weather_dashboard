@@ -132,6 +132,17 @@ const renderCitiesFromLocalStorage = () => {
   $("#searched-cities").append(ul);
 };
 
+//this will set the uv index background color based on the uv index value. green for normal levels, yellow for medium levels and red for dangerous levels
+const getUvIndexClass = (uvIndex) => {
+  if (uvIndex <= 3) {
+    return "p-2 bg-success text-white";
+  } else if (uvIndex >= 3 && uvIndex <= 7) {
+    return "p-2 bg-warning text-white";
+  } else {
+    return "p-2 bg-danger text-white";
+  }
+};
+
 const renderCurrentDayCard = (data) => {
   // this will make sure that the current day container in empty before appending a the city searched by user
   $("#current-day").empty();
@@ -145,7 +156,9 @@ const renderCurrentDayCard = (data) => {
     <div class="py-2">Temperature: ${data.temperature} &deg;F</div>
     <div class="py-2">Humidity: ${data.humidity}%</div>
     <div class="py-2">Wind Speed: ${data.windSpeed} MPH</div>
-    <div class="py-2">UV Index: <span class="">${data.uvi}</span></div>
+    <div class="py-2">UV Index: <span class="${getUvIndexClass(data.uvi)}">${
+    data.uvi
+  }</span></div>
   </div>
 </div>`;
 
