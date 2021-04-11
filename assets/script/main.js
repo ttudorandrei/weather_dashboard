@@ -1,3 +1,5 @@
+const API_KEY = "0492fcec51078a456b3b312201fb3dea";
+
 //this function gets the city names from local storage
 const getFromLocalStorage = () => {
   const localStorageData = JSON.parse(localStorage.getItem("cities"));
@@ -9,13 +11,32 @@ const getFromLocalStorage = () => {
   }
 };
 
+const fetchData = (cityName) => {
+  const functionForJSON = (responseObject) => {
+    return responseObject.json();
+  };
+  const functionForApplication = (dataFromServer) => {
+    console.log(dataFromServer);
+  };
+  const functionToHandleError = (errorObject) => {
+    console.log(errorObject);
+  };
+
+  const oneApiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}`;
+
+  fetch(oneApiUrl)
+    .then(functionForJSON)
+    .then(functionForApplication)
+    .catch(functionToHandleError);
+};
+
 //this will retrieve the city name based on which list item is clicked
 const getDataByCityName = (event) => {
   const target = $(event.target);
 
   if (target.is("li")) {
     const cityName = target.data("city");
-    console.log(cityName);
+    fetchData(cityName);
   }
 };
 
@@ -36,6 +57,8 @@ const onSubmit = (event) => {
 
   //this clears the text from input after submitting
   $("#city-input").val("");
+
+  fetchData(cityName);
 };
 
 const renderCitiesFromLocalStorage = () => {
@@ -70,4 +93,5 @@ const onReady = () => {
 };
 
 $("#search-by-city-form").on("submit", onSubmit);
+
 $(document).ready(onReady);
