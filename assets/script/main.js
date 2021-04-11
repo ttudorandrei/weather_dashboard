@@ -9,7 +9,7 @@ const getFromLocalStorage = () => {
   }
 };
 
-//this function retrieves data from input box
+//this function will be executed on form submit
 const onSubmit = (event) => {
   event.preventDefault();
 
@@ -21,10 +21,17 @@ const onSubmit = (event) => {
 
   //this saves array into local storage
   localStorage.setItem("cities", JSON.stringify(cities));
-  console.log(cities);
+
+  renderCitiesFromLocalStorage();
+
+  //this clears the text from input after submitting
+  $("#city-input").val("");
 };
 
 const renderCitiesFromLocalStorage = () => {
+  // this empties the list before appending the new, updated list
+  $("#searched-cities").empty();
+
   //this gets cities from local storage
   const cities = getFromLocalStorage();
 
@@ -38,6 +45,7 @@ const renderCitiesFromLocalStorage = () => {
     ul.append(li);
   };
 
+  //creates list item for each city stored in local storage and appends it
   cities.forEach(appendListItemToUl);
 
   $("#searched-cities").append(ul);
