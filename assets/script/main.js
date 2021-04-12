@@ -19,9 +19,7 @@ const fetchData = async (url) => {
     const data = await response.json();
 
     return data;
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 //this will retrieve the city name based on which list item is clicked
