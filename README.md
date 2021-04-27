@@ -17,6 +17,10 @@ As a developer I was tasked with building an app that displays current weather a
 
 ![Screenshot of information user will see when selecting a city from search history](assets/images/weather-dashboard-city-from-history.png)
 
+## Technologies Used
+
+This application was built using HTML, CSS, Bootstrap, JavaScript, jQuery and the Open Weather API 
+
 ## Link to deployed application
 
 You can access the deployed application [here](https://ttudorandrei.github.io/weather_dashboard/)
